@@ -64,6 +64,7 @@ double* recursive_mult(int n, double* A, double* B)
     double* C = new double[n * n];
     int k = n / 2;    
     
+    // declare the blocks to break up the matrix and assign indices from main matrices
     double A11[k*k];
     double A12[k*k];
     double A21[k*k];
@@ -88,11 +89,13 @@ double* recursive_mult(int n, double* A, double* B)
         }
     }
     
+    // perform matrix multiplication recursively on block matrices
     auto C11 = add_matrices(k, recursive_mult(k, A11, B11), recursive_mult(k, A12, B21));   
     auto C12 = add_matrices(k, recursive_mult(k, A11, B12), recursive_mult(k, A12, B22));
     auto C21 = add_matrices(k, recursive_mult(k, A21, B11), recursive_mult(k, A22, B21));
     auto C22 = add_matrices(k, recursive_mult(k, A21, B12), recursive_mult(k, A22, B22));
     
+    // assign values back to main result matrix
     for (int i = 0; i < k; i++) 
     {
         for (int j = 0; j < k; j++)
@@ -118,9 +121,11 @@ double* strassen_mult(int n, double* A, double* B)
         return C;
     }
 
+    // divide the block size by 2 each iteration
     double* C = new double[n * n];
     int k = n / 2;        
     
+    // declare the blocks to break up the matrix and assign indices from main matrices
     double A11[k*k];
     double A12[k*k];
     double A21[k*k];
@@ -145,6 +150,7 @@ double* strassen_mult(int n, double* A, double* B)
         }
     }
     
+    // calculate Strassen matrices
     auto P1 = strassen_mult(k, A11, sub_matrices(k, B12, B22));   
     auto P2 = strassen_mult(k, add_matrices(k, A11, A12), B22);
     auto P3 = strassen_mult(k, add_matrices(k, A21, A22), B11);
@@ -158,6 +164,7 @@ double* strassen_mult(int n, double* A, double* B)
     auto C21 = add_matrices(k, P3, P4);
     auto C22 = sub_matrices(k, sub_matrices(k, add_matrices(k, P5, P1), P3), P7);
     
+    // assign values back to main result matrix
     for (int i = 0; i < k; i++) 
     {
         for (int j = 0; j < k; j++)
@@ -185,6 +192,7 @@ void print_in_2d(int n, double* A)
     }
 }
 
+// check if two column major matrices A and B are equal
 bool check_equal(int n, double* A, double* B)
 {
     for (int i = 0; i < n*n; i++)
